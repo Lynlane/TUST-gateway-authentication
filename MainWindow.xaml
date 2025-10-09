@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr:namespace:autopasserforLynlanesnetwork"
         mc:Ignorable="d"
-        Title="Lynlane的网关认证助手" Height="660" Width="380"
+        Title="网关认证助手" Height="660" Width="380"
         ResizeMode="CanMinimize"
         FontFamily="Segoe UI">
 
@@ -678,10 +678,13 @@ VerticalAlignment="Stretch"/>
                             </GroupBox>
 
                             <!-- IP组状态显示 -->
-                            <StackPanel Grid.Row="8" Orientation="Vertical" Margin="5,20,5,0" HorizontalAlignment="Left">
-                                <TextBlock x:Name="txtGroup1Status" Foreground="#aaaaaa" FontSize="12" Text="IP 组 1：未开始"/>
-                                <TextBlock x:Name="txtGroup2Status" Foreground="#aaaaaa" FontSize="12" Text="IP 组 2：未启用" Visibility="Collapsed"/>
-                            </StackPanel>
+
+                            <GroupBox Grid.Row="4" Header="认证状态" Margin="0,10,0,0" >
+                                <StackPanel Grid.Row="8" Orientation="Vertical" Margin="5,0,0,0" HorizontalAlignment="Left">
+                                    <TextBlock x:Name="txtGroup1Status" Foreground="#aaaaaa" FontSize="12" Text="IP 组 1：未开始"/>
+                                    <TextBlock x:Name="txtGroup2Status" Foreground="#aaaaaa" FontSize="12" Text="IP 组 2：未启用" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </GroupBox>
                         </Grid>
                     </ScrollViewer>
                 </TabItem>
@@ -704,7 +707,7 @@ VerticalAlignment="Stretch"/>
                                 <StackPanel>
                                     <CheckBox x:Name="chkShowIPv6" Content="显示IPv6地址配置项" Margin="5" IsChecked="False"/>
                                 <CheckBox x:Name="chkShowTerminalType" Content="显示终端类型、运营商配置项" Margin="5" IsChecked="True"/>
-                                    <CheckBox x:Name="chkDistinguishGroups" Content="区分不同IP组的终端类型、运营商" Margin="5" IsChecked="False"/>
+                                    <CheckBox x:Name="chkDistinguishGroups" Content="区分不同IP组的终端类型、运营商" Margin="5" IsChecked="True"/>
                                 </StackPanel>
                             </GroupBox>
 
