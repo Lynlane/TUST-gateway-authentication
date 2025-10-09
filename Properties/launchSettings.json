@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AutoGateAuthV3": {
+      "commandName": "Project"
+    },
+    "配置文件 1": {
+      "commandName": "Project"
+    }
+  }
+}
