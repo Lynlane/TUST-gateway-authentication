@@ -33,11 +33,6 @@
 - 有问题可以可以去Q群 894974010 反馈（因为Github不怎么看）。
 - 欢迎参与贡献。
 
-### 主界面截图
-<img width="364" height="651" alt="QQ_1760066596914" src="https://github.com/user-attachments/assets/8a5756be-1bd7-4f5b-be18-185309aa8901" />
-
-
-
 ### **未来可能会：**
 
 - 对保存的数据进行加密
