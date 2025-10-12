@@ -17,6 +17,9 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Win32;
 using System.Windows.Input;
+using System.Diagnostics; // 用于获取当前进程的exe路径
+using System.Diagnostics;
+using System.Reflection;
 
 namespace autopasserforLynlanesnetwork
 {
@@ -1011,8 +1014,10 @@ namespace autopasserforLynlanesnetwork
                 {
                     if (key == null) return;
 
-                    string appName = "LynlanesNetworkAuth";
-                    string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    // 自动获取程序集名称作为appName
+                    string appName = Assembly.GetExecutingAssembly().GetName().Name;
+                    // 获取当前进程的主exe路径
+                    string appPath = Process.GetCurrentProcess().MainModule.FileName;
 
                     chkAutoStart.IsChecked = key.GetValue(appName)?.ToString() == appPath;
                 }
@@ -1023,24 +1028,27 @@ namespace autopasserforLynlanesnetwork
             }
         }
 
+        // 修改chkAutoStart_Click方法
         private void chkAutoStart_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string appName = "LynlanesNetworkAuth";
-                string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                // 自动获取程序集名称作为appName
+                string appName = Assembly.GetExecutingAssembly().GetName().Name;
+                // 获取当前进程的主exe路径
+                string appPath = Process.GetCurrentProcess().MainModule.FileName;
 
                 using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
                 {
                     if (chkAutoStart.IsChecked == true)
                     {
                         key.SetValue(appName, appPath);
-                        UpdateStatus("已设置为开机自启动");
+                        UpdateStatus($"已设置为开机自启动 (名称: {appName})");
                     }
                     else
                     {
                         key.DeleteValue(appName, false);
-                        UpdateStatus("已取消开机自启动");
+                        UpdateStatus($"已取消开机自启动 (名称: {appName})");
                     }
                 }
             }
@@ -1049,6 +1057,7 @@ namespace autopasserforLynlanesnetwork
                 UpdateStatus($"修改自启动设置出错: {ex.Message}");
             }
         }
+
         #endregion
     }
 }

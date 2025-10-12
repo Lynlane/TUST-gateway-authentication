@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AutoGateAuthV3")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66c5905c44a2101c0e0857298e4ffdc11c1623ce")]
 [assembly: System.Reflection.AssemblyProductAttribute("AutoGateAuthV3")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AutoGateAuthV3")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
