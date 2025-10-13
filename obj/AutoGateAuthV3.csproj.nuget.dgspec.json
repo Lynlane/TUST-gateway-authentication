@@ -51,6 +51,10 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "dependencies": {
+            "H.NotifyIcon.Wpf": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
             "WPF-UI": {
               "target": "Package",
               "version": "[4.0.3, )"

@@ -1,25 +1,26 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics; // 用于获取当前进程的exe路径
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Threading;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Web;
-using Microsoft.Win32;
 using System.Windows.Input;
-using System.Diagnostics; // 用于获取当前进程的exe路径
-using System.Diagnostics;
-using System.Reflection;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace autopasserforLynlanesnetwork
 {
@@ -63,6 +64,10 @@ namespace autopasserforLynlanesnetwork
             chkShowTerminalType.Unchecked += (s, e) => ApplyUISettings();
             chkDistinguishGroups.Checked += (s, e) => ApplyUISettings();
             chkDistinguishGroups.Unchecked += (s, e) => ApplyUISettings();
+
+            // 新增：初始化托盘菜单文本和图标
+            UpdateTrayAuthMenuText();
+            UpdateTrayIcon();
         }
 
         #region Initialization Methods
@@ -252,6 +257,9 @@ namespace autopasserforLynlanesnetwork
                 SetControlsState(true);
                 UpdateStatus("终止认证循环");
             }
+            // 新增：同步托盘菜单和图标状态
+            UpdateTrayAuthMenuText();
+            UpdateTrayIcon();
         }
 
         private void SetControlsState(bool enabled)
@@ -469,6 +477,11 @@ namespace autopasserforLynlanesnetwork
                         SaveLastUsedSettings();
                         ToggleAuthTimer(true);
                         await SendAuthRequest();
+
+                        // 新增：自动认证启动后同步托盘状态
+                        UpdateTrayAuthMenuText();
+                        UpdateTrayIcon();
+
                     }), DispatcherPriority.ApplicationIdle);
                 }
 
@@ -778,6 +791,39 @@ namespace autopasserforLynlanesnetwork
         #endregion
 
         #region Event Handlers
+        // 原有代码...
+
+        /// <summary>
+        /// 托盘菜单的认证开关点击事件（等效主界面btnLogin）
+        /// </summary>
+        private async void ToggleAuthMenu_Click(object sender, RoutedEventArgs e)
+        {
+            // 1. 隐藏托盘菜单（点击后自动关闭）
+            var contextMenu = (ContextMenu)((MenuItem)sender).Parent;
+            contextMenu.IsOpen = false;
+
+            // 2. 同主界面按钮逻辑：先验证参数
+            if (!ValidateAuthParams()) return;
+
+            // 3. 检查IP是否匹配（不匹配则提示确认）
+            if (!ConfirmIpMismatch()) return;
+
+            // 4. 切换认证状态（启动/停止定时器）
+            if (authTimer.IsEnabled)
+            {
+                ToggleAuthTimer(false); // 停止认证
+            }
+            else
+            {
+                SaveLastUsedSettings(); // 保存设置
+                ToggleAuthTimer(true);  // 启动认证
+                await SendAuthRequest(); // 立即发送一次认证请求
+            }
+
+            // 5. 同步更新托盘菜单文本和图标
+            UpdateTrayAuthMenuText();
+            UpdateTrayIcon();
+        }
         private void ParseUrl_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtFullUrl.Text))
@@ -988,6 +1034,39 @@ namespace autopasserforLynlanesnetwork
         #endregion
 
         #region Helper Methods
+        // 原有代码...
+
+        /// <summary>
+        /// 更新托盘菜单的认证开关文本（开始/停止维持认证）
+        /// </summary>
+        private void UpdateTrayAuthMenuText()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // 根据定时器状态判断认证状态：定时器运行=正在维持认证
+                ToggleAuthMenu.Header = authTimer.IsEnabled
+                    ? "停止维持认证"
+                    : "开始维持认证";
+            });
+        }
+
+        /// <summary>
+        /// 更新托盘图标（根据认证状态切换）
+        /// </summary>
+        private void UpdateTrayIcon()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // 认证中使用gateway1.ico，未认证使用gateway2.ico
+                TrayIcon.IconSource = new BitmapImage(new Uri(
+                    authTimer.IsEnabled
+                        ? "pack://application:,,,/res/gateway1.ico"
+                        : "pack://application:,,,/res/gateway2.ico"
+                ));
+            });
+        }
+        
+
         private string GetOperatorCode()
         {
             return cmbOperator.SelectedIndex switch
@@ -1057,6 +1136,45 @@ namespace autopasserforLynlanesnetwork
                 UpdateStatus($"修改自启动设置出错: {ex.Message}");
             }
         }
+
+        #endregion
+        #region Task Bar
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            WindowState = WindowState.Minimized;
+        }
+        private void Window_StateChanged(object sender, System.EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                Hide();
+                TrayIcon.Visibility = Visibility.Visible;
+            }
+        }
+        private void TrayIcon_TrayLeftMouseDown(object sender, RoutedEventArgs e)
+        {
+            ShowMainWindow();
+        }
+
+        private void ShowMainWindow()
+        {
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+            TrayIcon.Visibility = Visibility.Collapsed;
+        }
+        private void ShowWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ShowMainWindow();
+        }
+
+        private void ExitApp_Click(object sender, RoutedEventArgs e)
+        {
+            TrayIcon.Dispose();
+            Application.Current.Shutdown();
+        }
+
 
         #endregion
     }

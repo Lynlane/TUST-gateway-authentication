@@ -2,6 +2,104 @@
   "version": 3,
   "targets": {
     "net8.0-windows7.0": {
+      "H.GeneratedIcons.System.Drawing/2.3.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Drawing.Common": "9.0.1"
+        },
+        "compile": {
+          "lib/net8.0/H.GeneratedIcons.System.Drawing.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/H.GeneratedIcons.System.Drawing.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "H.NotifyIcon/2.3.1": {
+        "type": "package",
+        "dependencies": {
+          "H.GeneratedIcons.System.Drawing": "2.3.1"
+        },
+        "compile": {
+          "lib/net8.0/H.NotifyIcon.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/H.NotifyIcon.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "H.NotifyIcon.Wpf/2.3.1": {
+        "type": "package",
+        "dependencies": {
+          "H.NotifyIcon": "2.3.1"
+        },
+        "compile": {
+          "lib/net8.0-windows7.0/H.NotifyIcon.Wpf.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows7.0/H.NotifyIcon.Wpf.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
+      },
+      "Microsoft.Win32.SystemEvents/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "System.Drawing.Common/9.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "9.0.1"
+        },
+        "compile": {
+          "lib/net8.0/System.Drawing.Common.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/System.Private.Windows.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Drawing.Common.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net8.0/System.Private.Windows.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
       "WPF-UI/4.0.3": {
         "type": "package",
         "dependencies": {
@@ -37,6 +135,143 @@
     }
   },
   "libraries": {
+    "H.GeneratedIcons.System.Drawing/2.3.1": {
+      "sha512": "eG1sm68eGLbnvfsXBG4eZ1o/aLNpTH2v+oUGZfILQKwQczwZVySf6Nl6xzoPHdIJwuIdjn3AaxcCre+0MpPeVw==",
+      "type": "package",
+      "path": "h.generatedicons.system.drawing/2.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "h.generatedicons.system.drawing.2.3.1.nupkg.sha512",
+        "h.generatedicons.system.drawing.nuspec",
+        "lib/net462/H.GeneratedIcons.System.Drawing.dll",
+        "lib/net462/H.GeneratedIcons.System.Drawing.xml",
+        "lib/net8.0/H.GeneratedIcons.System.Drawing.dll",
+        "lib/net8.0/H.GeneratedIcons.System.Drawing.xml",
+        "lib/net9.0/H.GeneratedIcons.System.Drawing.dll",
+        "lib/net9.0/H.GeneratedIcons.System.Drawing.xml",
+        "lib/netstandard2.0/H.GeneratedIcons.System.Drawing.dll",
+        "lib/netstandard2.0/H.GeneratedIcons.System.Drawing.xml",
+        "nuget_icon.png"
+      ]
+    },
+    "H.NotifyIcon/2.3.1": {
+      "sha512": "Io6snB/LGeKTXlaZOjRj4Wn1+VrTdwMenbkGcYEqdzpLoVo9LAkckg0Qy6ViXP8f2ZOaCHJ/DwAg6DnKM0f5BQ==",
+      "type": "package",
+      "path": "h.notifyicon/2.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "h.notifyicon.2.3.1.nupkg.sha512",
+        "h.notifyicon.nuspec",
+        "lib/net462/H.NotifyIcon.dll",
+        "lib/net462/H.NotifyIcon.xml",
+        "lib/net8.0/H.NotifyIcon.dll",
+        "lib/net8.0/H.NotifyIcon.xml",
+        "lib/net9.0/H.NotifyIcon.dll",
+        "lib/net9.0/H.NotifyIcon.xml",
+        "lib/netstandard2.0/H.NotifyIcon.dll",
+        "lib/netstandard2.0/H.NotifyIcon.xml",
+        "nuget_icon.png"
+      ]
+    },
+    "H.NotifyIcon.Wpf/2.3.1": {
+      "sha512": "jH8Hku3FleV0WqsJe2KRwfhBCqiFFMNvczqXQYAxlpGCsWEGZnVrTiP6CGDUvKXzTorfWxu2N7ZOBv7w+qTguQ==",
+      "type": "package",
+      "path": "h.notifyicon.wpf/2.3.1",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "h.notifyicon.wpf.2.3.1.nupkg.sha512",
+        "h.notifyicon.wpf.nuspec",
+        "lib/net462/H.NotifyIcon.Wpf.dll",
+        "lib/net462/H.NotifyIcon.Wpf.xml",
+        "lib/net8.0-windows7.0/H.NotifyIcon.Wpf.dll",
+        "lib/net8.0-windows7.0/H.NotifyIcon.Wpf.xml",
+        "lib/net9.0-windows7.0/H.NotifyIcon.Wpf.dll",
+        "lib/net9.0-windows7.0/H.NotifyIcon.Wpf.xml",
+        "nuget_icon.png",
+        "tools/VisualStudioToolsManifest.xml"
+      ]
+    },
+    "Microsoft.Win32.SystemEvents/9.0.1": {
+      "sha512": "OxjcwJqBW/5A1111+vL9d+5KYTvOzeCTJY9zHZ0kpQI4wX075p6L7inHPSYuf0MGakVjUvaShvw9e9pfbInU2Q==",
+      "type": "package",
+      "path": "microsoft.win32.systemevents/9.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Win32.SystemEvents.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Win32.SystemEvents.targets",
+        "lib/net462/Microsoft.Win32.SystemEvents.dll",
+        "lib/net462/Microsoft.Win32.SystemEvents.xml",
+        "lib/net8.0/Microsoft.Win32.SystemEvents.dll",
+        "lib/net8.0/Microsoft.Win32.SystemEvents.xml",
+        "lib/net9.0/Microsoft.Win32.SystemEvents.dll",
+        "lib/net9.0/Microsoft.Win32.SystemEvents.xml",
+        "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll",
+        "lib/netstandard2.0/Microsoft.Win32.SystemEvents.xml",
+        "microsoft.win32.systemevents.9.0.1.nupkg.sha512",
+        "microsoft.win32.systemevents.nuspec",
+        "runtimes/win/lib/net8.0/Microsoft.Win32.SystemEvents.dll",
+        "runtimes/win/lib/net8.0/Microsoft.Win32.SystemEvents.xml",
+        "runtimes/win/lib/net9.0/Microsoft.Win32.SystemEvents.dll",
+        "runtimes/win/lib/net9.0/Microsoft.Win32.SystemEvents.xml",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Drawing.Common/9.0.1": {
+      "sha512": "TTPkCqSMyMaG8BXlBKYTTJFtLV0SvjjsvgUN598hYgHaX/5B7tdUc2JhQF9vwrYmlzxId+gwFnKYuxQ2XsSz2g==",
+      "type": "package",
+      "path": "system.drawing.common/9.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Drawing.Common.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Drawing.Common.targets",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net462/System.Drawing.Common.dll",
+        "lib/net462/System.Drawing.Common.pdb",
+        "lib/net462/System.Drawing.Common.xml",
+        "lib/net8.0/System.Drawing.Common.dll",
+        "lib/net8.0/System.Drawing.Common.pdb",
+        "lib/net8.0/System.Drawing.Common.xml",
+        "lib/net8.0/System.Private.Windows.Core.dll",
+        "lib/net8.0/System.Private.Windows.Core.xml",
+        "lib/net9.0/System.Drawing.Common.dll",
+        "lib/net9.0/System.Drawing.Common.pdb",
+        "lib/net9.0/System.Drawing.Common.xml",
+        "lib/net9.0/System.Private.Windows.Core.dll",
+        "lib/net9.0/System.Private.Windows.Core.xml",
+        "lib/netstandard2.0/System.Drawing.Common.dll",
+        "lib/netstandard2.0/System.Drawing.Common.pdb",
+        "lib/netstandard2.0/System.Drawing.Common.xml",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "system.drawing.common.9.0.1.nupkg.sha512",
+        "system.drawing.common.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "WPF-UI/4.0.3": {
       "sha512": "izkG9uL33gYDkZkirpamlvk6v9ru5QL+97Dgqhr0rkGcwuJZOPd5zkhEUwlDOZ25OFX3Hbp2O/jpHILCYPNfiQ==",
       "type": "package",
@@ -111,6 +346,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
+      "H.NotifyIcon.Wpf >= 2.3.1",
       "WPF-UI >= 4.0.3"
     ]
   },
@@ -165,6 +401,10 @@
       "net8.0-windows7.0": {
         "targetAlias": "net8.0-windows",
         "dependencies": {
+          "H.NotifyIcon.Wpf": {
+            "target": "Package",
+            "version": "[2.3.1, )"
+          },
           "WPF-UI": {
             "target": "Package",
             "version": "[4.0.3, )"

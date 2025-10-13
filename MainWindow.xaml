@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr:namespace:autopasserforLynlanesnetwork"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        StateChanged="Window_StateChanged"
         mc:Ignorable="d"
         Title="网关认证助手" Height="660" Width="380"
         ResizeMode="CanMinimize"
@@ -451,7 +453,7 @@
                 <!--<Rectangle Fill="White"
                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}}"
                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Window}}"/> -->
-                <Image Source="pack://application:,,,/res/b3b7cf99b7ebf42bb328c9d7dea9a1b6_720.jpg"
+                <Image Source="pack://application:,,,/res/background.jpg"
                    Stretch="UniformToFill"
                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Window}}"
                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Window}}">
@@ -466,7 +468,8 @@
     <Window.Background>
         <StaticResource ResourceKey="BlurredBackgroundBrush"/>
     </Window.Background>
-        
+
+    <Grid>
         <Grid>
     <Rectangle Stroke="#0A1AA4"
 StrokeThickness="1"
@@ -887,4 +890,24 @@ VerticalAlignment="Stretch"/>
             </TabControl>
     </Grid>
     </Grid>
+        <!-- 系统托盘图标 -->
+        <tb:TaskbarIcon x:Name="TrayIcon"
+      IconSource="pack://application:,,,/res/gateway2.ico"  
+            ToolTipText="TUST 网关认证助手"
+      TrayLeftMouseDown="TrayIcon_TrayLeftMouseDown">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="显示窗口" Click="ShowWindow_Click"/>
+                    <!-- 新增：动态认证开关选项 -->
+                    <MenuItem x:Name="ToggleAuthMenu" Click="ToggleAuthMenu_Click"/>
+                    <Separator/>
+                    <MenuItem Header="退出" Click="ExitApp_Click"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
 </Window>
+    
+    
+    
+    

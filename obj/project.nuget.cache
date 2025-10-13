@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "eWOAdi5yzoY=",
+  "dgSpecHash": "6w9qUVg4Zac=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\AutoGateAuthV3.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Lynlane\\.nuget\\packages\\h.generatedicons.system.drawing\\2.3.1\\h.generatedicons.system.drawing.2.3.1.nupkg.sha512",
+    "C:\\Users\\Lynlane\\.nuget\\packages\\h.notifyicon\\2.3.1\\h.notifyicon.2.3.1.nupkg.sha512",
+    "C:\\Users\\Lynlane\\.nuget\\packages\\h.notifyicon.wpf\\2.3.1\\h.notifyicon.wpf.2.3.1.nupkg.sha512",
+    "C:\\Users\\Lynlane\\.nuget\\packages\\microsoft.win32.systemevents\\9.0.1\\microsoft.win32.systemevents.9.0.1.nupkg.sha512",
+    "C:\\Users\\Lynlane\\.nuget\\packages\\system.drawing.common\\9.0.1\\system.drawing.common.9.0.1.nupkg.sha512",
     "C:\\Users\\Lynlane\\.nuget\\packages\\wpf-ui\\4.0.3\\wpf-ui.4.0.3.nupkg.sha512",
     "C:\\Users\\Lynlane\\.nuget\\packages\\wpf-ui.abstractions\\4.0.3\\wpf-ui.abstractions.4.0.3.nupkg.sha512"
   ],

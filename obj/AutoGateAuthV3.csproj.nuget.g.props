@@ -15,5 +15,6 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgWPF-UI Condition=" '$(PkgWPF-UI)' == '' ">C:\Users\Lynlane\.nuget\packages\wpf-ui\4.0.3</PkgWPF-UI>
+    <PkgH_NotifyIcon_Wpf Condition=" '$(PkgH_NotifyIcon_Wpf)' == '' ">C:\Users\Lynlane\.nuget\packages\h.notifyicon.wpf\2.3.1</PkgH_NotifyIcon_Wpf>
   </PropertyGroup>
 </Project>

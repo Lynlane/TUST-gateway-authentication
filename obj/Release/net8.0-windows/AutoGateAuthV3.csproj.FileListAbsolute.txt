@@ -28,8 +28,15 @@ C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Rele
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\AutoGateAuthV3.runtimeconfig.json
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\AutoGateAuthV3.dll
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\AutoGateAuthV3.pdb
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\H.GeneratedIcons.System.Drawing.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\H.NotifyIcon.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\H.NotifyIcon.Wpf.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\System.Drawing.Common.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\Wpf.Ui.dll
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\Wpf.Ui.Abstractions.dll
+C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\obj\Release\net8.0-windows\AutoGateAuthV3.csproj.AssemblyReference.cache
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\obj\Release\net8.0-windows\MainWindow.baml
 C:\Users\Lynlane\Documents\_Programmes\Gateway_Authentication_Sustainer\obj\Release\net8.0-windows\MainWindow.g.cs
