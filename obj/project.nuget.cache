@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6w9qUVg4Zac=",
+  "dgSpecHash": "gGNMkakQvfk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\AutoGateAuthV3.csproj",
+  "projectFilePath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\TUST_gateway_authentication.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lynlane\\.nuget\\packages\\h.generatedicons.system.drawing\\2.3.1\\h.generatedicons.system.drawing.2.3.1.nupkg.sha512",
     "C:\\Users\\Lynlane\\.nuget\\packages\\h.notifyicon\\2.3.1\\h.notifyicon.2.3.1.nupkg.sha512",

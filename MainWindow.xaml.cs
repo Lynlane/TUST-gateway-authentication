@@ -22,7 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace autopasserforLynlanesnetwork
+namespace TUST_gateway_authentication
 {
     public static class StringExtensions
     {

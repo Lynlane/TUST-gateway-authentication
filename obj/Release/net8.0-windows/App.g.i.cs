@@ -63,7 +63,7 @@ namespace AutoGateAuthV3 {
             
             #line default
             #line hidden
-            System.Uri resourceLocater = new System.Uri("/AutoGateAuthV3;component/app.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/TUST_gateway_authentication;component/app.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\App.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

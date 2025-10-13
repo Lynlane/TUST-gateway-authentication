@@ -357,9 +357,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\AutoGateAuthV3.csproj",
-      "projectName": "AutoGateAuthV3",
-      "projectPath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\AutoGateAuthV3.csproj",
+      "projectUniqueName": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\TUST_gateway_authentication.csproj",
+      "projectName": "TUST_gateway_authentication",
+      "projectPath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\TUST_gateway_authentication.csproj",
       "packagesPath": "C:\\Users\\Lynlane\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Lynlane\\Documents\\_Programmes\\Gateway_Authentication_Sustainer\\obj\\",
       "projectStyle": "PackageReference",
