@@ -16,8 +16,9 @@
 
   <ItemGroup>
       <Resource Include="res\background.jpg" />
-	  <Resource Include="res\gateway1.ico" />
-	  <Resource Include="res\gateway2.ico" />
+      <Resource Include="res\gateway1.ico" />
+      <Resource Include="res\gateway2.ico" />
+      <Resource Include="res\gateway3.ico" />
   </ItemGroup>
 
 </Project>

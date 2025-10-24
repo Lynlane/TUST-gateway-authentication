@@ -859,7 +859,10 @@ VerticalAlignment="Stretch"/>
                                           Click="chkAutoStart_Click" 
                                           Foreground="{StaticResource TextBrush}"/>
 
-                                    <!-- 新增：启动时自动认证 -->
+                                    <CheckBox x:Name="chkAutoHideOnStart" Content="程序启动时自动隐藏（仅托盘运行）" Margin="5" 
+                                          Foreground="{StaticResource TextBrush}"/>
+
+                                        <!-- 新增：启动时自动认证 -->
                                     <CheckBox x:Name="chkAutoAuth" Content="程序启动时自动按配置进行认证" Margin="5" 
                                           Foreground="{StaticResource TextBrush}"/>
 

@@ -257,7 +257,7 @@ namespace TUST_gateway_authentication
                 SetControlsState(true);
                 UpdateStatus("终止认证循环");
             }
-            // 新增：同步托盘菜单和图标状态
+            // 同步托盘菜单和图标状态
             UpdateTrayAuthMenuText();
             UpdateTrayIcon();
         }
@@ -357,7 +357,8 @@ namespace TUST_gateway_authentication
                         Group1OperatorIndex = cmbGroup1Operator.SelectedIndex,
                         Group1TerminalTypeIndex = cmbGroup1TerminalType.SelectedIndex,
                         Group2OperatorIndex = cmbGroup2Operator.SelectedIndex,
-                        Group2TerminalTypeIndex = cmbGroup2TerminalType.SelectedIndex
+                        Group2TerminalTypeIndex = cmbGroup2TerminalType.SelectedIndex,
+                        AutoHideOnStartEnabled = chkAutoHideOnStart.IsChecked ?? false
                     },
                     new JsonSerializerOptions { WriteIndented = true }
                 ));
@@ -454,9 +455,12 @@ namespace TUST_gateway_authentication
                 cmbGroup2TerminalType.SelectedIndex = settings.Group2TerminalTypeIndex >= 0 ?
                     Math.Min(settings.Group2TerminalTypeIndex, cmbGroup2TerminalType.Items.Count - 1) : 0;
 
+
+                chkAutoHideOnStart.IsChecked = settings.AutoHideOnStartEnabled;
+
+
                 // Handle IP group 2 visibility
-                if (!string.IsNullOrEmpty(settings.LastWlanUserIp2) ||
-        !string.IsNullOrEmpty(settings.LastWlanUserIpv6_2))
+                if (!string.IsNullOrEmpty(settings.LastWlanUserIp2) || !string.IsNullOrEmpty(settings.LastWlanUserIpv6_2))
                 {
                     ipGroup2Added = true;
                     txtWlanUserIp2.Visibility = Visibility.Visible;
@@ -484,7 +488,15 @@ namespace TUST_gateway_authentication
 
                     }), DispatcherPriority.ApplicationIdle);
                 }
-
+                if (settings.AutoHideOnStartEnabled)
+                {
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        Hide(); // 隐藏主窗口
+                        TrayIcon.Visibility = Visibility.Visible; // 确保托盘图标显示
+                        UpdateStatus("程序已按配置自动隐藏，仅托盘运行");
+                    }), DispatcherPriority.ApplicationIdle);
+                }
                 UpdateStatus("加载上次保存的参数设置");
             }
             catch (Exception ex)
@@ -529,6 +541,8 @@ namespace TUST_gateway_authentication
             public int Group1TerminalTypeIndex { get; set; } = 0;
             public int Group2OperatorIndex { get; set; } = 0;
             public int Group2TerminalTypeIndex { get; set; } = 0;
+
+            public bool AutoHideOnStartEnabled { get; set; } = false;
         }
         #endregion
 
@@ -1002,17 +1016,18 @@ namespace TUST_gateway_authentication
             {
                 if (groupIndex == 1)
                 {
-                    //group1LatestStatus = status;
+                    group1LatestStatus = status;
                     txtGroup1Status.Text = $"IP 组 1：{status}";
                 }
                 else if (groupIndex == 2 && ipGroup2Added)
                 {
-                    //group2LatestStatus = status;
+                    group2LatestStatus = status;
                     txtGroup2Status.Text = $"IP 组 2：{status}";
                     txtGroup2Status.Visibility = Visibility.Visible;
                 }
 
                 UpdateStatus(statusWithGroup);
+                UpdateTrayIcon(); // 更新托盘图标
             });
         }
 
@@ -1053,19 +1068,40 @@ namespace TUST_gateway_authentication
         /// <summary>
         /// 更新托盘图标（根据认证状态切换）
         /// </summary>
+        /// <summary>
+        /// 更新托盘图标（根据认证状态切换）
+        /// 逻辑：
+        /// - 若认证状态不是“当前IP在线”或“认证成功”，用gateway3.ico
+        /// - 否则按原逻辑：认证中用gateway2.ico，未认证用gateway1.ico
+        /// </summary>
         private void UpdateTrayIcon()
         {
             Dispatcher.Invoke(() =>
             {
-                // 认证中使用gateway1.ico，未认证使用gateway2.ico
-                TrayIcon.IconSource = new BitmapImage(new Uri(
-                    authTimer.IsEnabled
-                        ? "pack://application:,,,/res/gateway1.ico"
-                        : "pack://application:,,,/res/gateway2.ico"
-                ));
+                // 1. 判断当前认证状态是否为成功或在线或正在认证
+                bool isSuccessOrOnline = false;
+
+                // 检查第一组状态（始终）
+                if (group1LatestStatus.StartsWith("✅ 认证成功") || group1LatestStatus.StartsWith("✅ 当前IP在线") || group1LatestStatus.StartsWith("正在认证"))
+                {
+                    isSuccessOrOnline = true;
+                }
+                // 检查第二组状态（仅当启用时）
+                else if (ipGroup2Added &&
+                        (group2LatestStatus.StartsWith("✅ 认证成功") || group2LatestStatus.StartsWith("✅ 当前IP在线") || group1LatestStatus.StartsWith("正在认证")))
+                {
+                    isSuccessOrOnline = true;
+                }
+
+                // 2. 根据状态选择图标
+                string iconPath = isSuccessOrOnline
+                    ? (authTimer.IsEnabled ? "pack://application:,,,/res/gateway2.ico" : "pack://application:,,,/res/gateway1.ico")
+                    : "pack://application:,,,/res/gateway3.ico"; // 状态异常时用gateway3
+
+                TrayIcon.IconSource = new BitmapImage(new Uri(iconPath));
             });
         }
-        
+
 
         private string GetOperatorCode()
         {
@@ -1162,7 +1198,7 @@ namespace TUST_gateway_authentication
             Show();
             WindowState = WindowState.Normal;
             Activate();
-            TrayIcon.Visibility = Visibility.Collapsed;
+            
         }
         private void ShowWindow_Click(object sender, RoutedEventArgs e)
         {
