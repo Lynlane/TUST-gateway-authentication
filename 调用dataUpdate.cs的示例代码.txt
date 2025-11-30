@@ -1,0 +1,34 @@
+using System;
+
+namespace GitRepoDownloader
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {   
+            Console.WriteLine("开始检查更新...");
+            
+            DataUpdater updater = new DataUpdater();
+            
+            // 检查是否有更新
+            bool hasUpdate = updater.CheckForUpdates();
+            
+            if (hasUpdate)
+            {   
+                Console.WriteLine("发现新版本，正在更新...");
+                
+                // 执行更新
+                updater.Update();
+                
+                Console.WriteLine("更新完成！");
+            }
+            else
+            {   
+                Console.WriteLine("当前已是最新版本。");
+            }
+            
+            Console.WriteLine("按任意键退出...");
+            Console.ReadKey();
+        }
+    }
+}

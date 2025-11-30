@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics; // 用于获取当前进程的exe路径
@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using GitRepoDownloader;
 
 namespace TUST_gateway_authentication
 {
@@ -46,6 +47,7 @@ namespace TUST_gateway_authentication
         private string group2LatestStatus = "未启用";
         private bool isAutoAuthRequested = false;
         private bool ipGroup2Added = false;
+        private DataUpdater updater = new DataUpdater();
 
         public MainWindow()
         {
@@ -324,41 +326,40 @@ namespace TUST_gateway_authentication
                 File.WriteAllText(SettingsFilePath, JsonSerializer.Serialize(
                     new AppSettings
                     {
-                        LastAccount = txtAccount.Text,
-                        LastPassword = txtPassword.Password,
-                        LastCallback = txtCallback.Text,
-                        LastLoginMethod = txtLoginMethod.Text,
-                        LastWlanUserIp = txtWlanUserIp.Text,
-                        LastWlanUserIpv6 = txtWlanUserIpv6.Text,
-                        LastWlanUserMac = txtWlanUserMac.Text,
-                        LastWlanAcIp = txtWlanAcIp.Text,
-                        LastAuthGateway = txtAuthGateway.Text,
-                        LastTerminalType = txtTerminalType.Text,
-                        LastWlanVlanId = txtWlanVlanId.Text,
-                        LastLogoutAccount = txtLogoutAccount.Text,
-                        LastLogoutPassword = txtLogoutPassword.Text,
-                        LastAcLogout = txtAcLogout.Text,
-                        LastJsVersion = txtJsVersion.Text,
-                        LastV = txtV.Text,
-                        LastOperatorIndex = cmbOperator.SelectedIndex,
-                        LastSavePassword = chkSavePassword.IsChecked ?? false,
-                        OnlineInterval = authOnlineInterval,
-                        OfflineInterval = authOfflineInterval,
-                        AutoStartEnabled = chkAutoStart.IsChecked ?? false,
-                        TerminalTypeIndex = cmbTerminalType.SelectedIndex,
-                        LastWlanUserIp2 = txtWlanUserIp2.Text,
-                        LastWlanUserIpv6_2 = txtWlanUserIpv6_2.Text,
-                        AutoAuthEnabled = chkAutoAuth.IsChecked ?? false,
+                        LastAccount = txtAccount.Text, // 账号
+                        LastPassword = txtPassword.Password, // 密码
+                        LastCallback = txtCallback.Text, // Callback
+                        LastLoginMethod = txtLoginMethod.Text, // 登录方式
+                        LastWlanUserIp = txtWlanUserIp.Text, // IPv4地址
+                        LastWlanUserIpv6 = txtWlanUserIpv6.Text, // IPv6地址
+                        LastWlanUserMac = txtWlanUserMac.Text, // MAC地址
+                        LastWlanAcIp = txtWlanAcIp.Text, // AC IP
+                        LastAuthGateway = txtAuthGateway.Text, // 认证网关
+                        LastTerminalType = txtTerminalType.Text, // terminal_type
+                        LastWlanVlanId = txtWlanVlanId.Text, // VLAN ID
+                        LastLogoutAccount = txtLogoutAccount.Text, // 注销账户
+                        LastLogoutPassword = txtLogoutPassword.Text, // 注销密码
+                        LastAcLogout = txtAcLogout.Text, // 注销模式
+                        LastJsVersion = txtJsVersion.Text, // JS版本
+                        LastV = txtV.Text, // 验证版本
+                        LastOperatorIndex = cmbOperator.SelectedIndex, // 运营商
+                        LastSavePassword = chkSavePassword.IsChecked ?? false, // 记住配置
+                        OnlineInterval = authOnlineInterval, // 在线间隔 (秒)
+                        OfflineInterval = authOfflineInterval, // 离线间隔 (秒)
+                        AutoStartEnabled = chkAutoStart.IsChecked ?? false, // 开机自启动
+                        TerminalTypeIndex = cmbTerminalType.SelectedIndex, // 终端类型
+                        LastWlanUserIp2 = txtWlanUserIp2.Text, // IPv4地址（第二组）
+                        LastWlanUserIpv6_2 = txtWlanUserIpv6_2.Text, // IPv6地址（第二组）
+                        AutoAuthEnabled = chkAutoAuth.IsChecked ?? false, // 启动时自动认证
 
-                        // New settings
-                        ShowIPv6 = chkShowIPv6.IsChecked ?? false,
-                        ShowTerminalType = chkShowTerminalType.IsChecked ?? true,
-                        DistinguishGroups = chkDistinguishGroups.IsChecked ?? false,
-                        Group1OperatorIndex = cmbGroup1Operator.SelectedIndex,
-                        Group1TerminalTypeIndex = cmbGroup1TerminalType.SelectedIndex,
-                        Group2OperatorIndex = cmbGroup2Operator.SelectedIndex,
-                        Group2TerminalTypeIndex = cmbGroup2TerminalType.SelectedIndex,
-                        AutoHideOnStartEnabled = chkAutoHideOnStart.IsChecked ?? false
+                        ShowIPv6 = chkShowIPv6.IsChecked ?? false, // 显示IPv6地址配置项
+                        ShowTerminalType = chkShowTerminalType.IsChecked ?? true, // 显示终端类型、运营商配置项
+                        DistinguishGroups = chkDistinguishGroups.IsChecked ?? false, // 区分不同IP组的终端类型、运营商
+                        Group1OperatorIndex = cmbGroup1Operator.SelectedIndex, // 第一组运营商
+                        Group1TerminalTypeIndex = cmbGroup1TerminalType.SelectedIndex, // 第一组终端类型
+                        Group2OperatorIndex = cmbGroup2Operator.SelectedIndex, // 第二组运营商
+                        Group2TerminalTypeIndex = cmbGroup2TerminalType.SelectedIndex, // 第二组终端类型
+                        AutoHideOnStartEnabled = chkAutoHideOnStart.IsChecked ?? false // 启动时隐藏到托盘
                     },
                     new JsonSerializerOptions { WriteIndented = true }
                 ));
@@ -1003,6 +1004,211 @@ namespace TUST_gateway_authentication
         private async void LogoutLink_Click(object sender, RoutedEventArgs e)
         {
             await SendAuthRequest(isLogout: true);
+        }
+
+        /// <summary>
+        /// 检查更新按钮点击事件
+        /// </summary>
+        private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateStatus("正在检查更新...");
+                txtUpdateStatus.Text = "正在检查更新...";
+                btnCheckUpdate.IsEnabled = false;
+                
+                // 使用异步方式执行检查
+                var updateResult = await updater.CheckForUpdatesAsync();
+                
+                if (updateResult.HasAppUpdate || updateResult.HasDataUpdate)
+                {
+                    string statusText = "发现新版本：";
+                    if (updateResult.HasAppUpdate)
+                    {
+                        statusText += $"APP更新 (当前版本: {updateResult.LocalAppVersion}, 最新版本: {updateResult.RemoteAppVersion})";
+                        btnDownloadApp.Visibility = Visibility.Visible;
+                    }
+                    if (updateResult.HasDataUpdate)
+                    {
+                        if (updateResult.HasAppUpdate)
+                        {
+                            statusText += "，";
+                        }
+                        statusText += $"数据更新 (当前版本: {updateResult.LocalDataVersion}, 最新版本: {updateResult.RemoteDataVersion})";
+                        btnApplyUpdate.Visibility = Visibility.Visible;
+                    }
+                    txtUpdateStatus.Text = statusText;
+                }
+                else
+                {
+                    txtUpdateStatus.Text = "当前已是最新版本~";
+                    UpdateStatus("当前已是最新版本~");
+                    btnApplyUpdate.Visibility = Visibility.Collapsed;
+                    btnDownloadApp.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateStatus($"检查更新时出错: {ex.Message}");
+                txtUpdateStatus.Text = $"检查更新时出错: {ex.Message}";
+            }
+            finally
+            {
+                btnCheckUpdate.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// 应用更新按钮点击事件
+        /// </summary>
+        private async void ApplyUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateStatus("正在应用更新...");
+                txtUpdateStatus.Text = "正在应用更新...";
+                btnCheckUpdate.IsEnabled = false;
+                btnApplyUpdate.IsEnabled = false;
+                btnDownloadApp.IsEnabled = false;
+                
+                // 使用异步方式执行更新
+                await updater.UpdateAsync();
+                
+                // 读取并应用hotfix.txt中的参数
+                ApplyHotfixParameters();
+                
+                UpdateStatus("数据更新完成！");
+                txtUpdateStatus.Text = "数据更新完成！";
+                btnApplyUpdate.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                UpdateStatus($"应用更新时出错: {ex.Message}");
+                txtUpdateStatus.Text = $"应用更新时出错: {ex.Message}";
+            }
+            finally
+            {
+                btnCheckUpdate.IsEnabled = true;
+                btnApplyUpdate.IsEnabled = true;
+                btnDownloadApp.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// 读取并应用hotfix.txt中的参数
+        /// </summary>
+        private void ApplyHotfixParameters()
+        {
+            try
+            {
+                string appDir = AppDomain.CurrentDomain.BaseDirectory;
+                string hotfixPath = Path.Combine(appDir, "res/data", "hotfix.txt");
+                
+                if (File.Exists(hotfixPath))
+                {
+                    UpdateStatus("正在读取hotfix参数...");
+                    
+                    // 读取hotfix.txt文件内容
+                    string[] lines = File.ReadAllLines(hotfixPath);
+                    
+                    // 解析hotfix参数
+                    Dictionary<string, string> hotfixParams = new Dictionary<string, string>();
+                    foreach (string line in lines)
+                    {
+                        string trimmedLine = line.Trim();
+                        if (string.IsNullOrEmpty(trimmedLine)) continue;
+                        
+                        int equalsIndex = trimmedLine.IndexOf('=');
+                        if (equalsIndex > 0)
+                        {
+                            string key = trimmedLine.Substring(0, equalsIndex).Trim();
+                            string value = trimmedLine.Substring(equalsIndex + 1).Trim();
+                            hotfixParams[key] = value;
+                        }
+                    }
+                    
+                    // 应用hotfix参数到UI控件
+                    if (hotfixParams.TryGetValue("AuthGateway", out string authGateway))
+                    {
+                        txtAuthGateway.Text = authGateway;
+                    }
+                    if (hotfixParams.TryGetValue("LoginMethod", out string loginMethod))
+                    {
+                        txtLoginMethod.Text = loginMethod;
+                    }
+                    if (hotfixParams.TryGetValue("LogoutAccount", out string logoutAccount))
+                    {
+                        txtLogoutAccount.Text = logoutAccount;
+                    }
+                    if (hotfixParams.TryGetValue("LogoutPassword", out string logoutPassword))
+                    {
+                        txtLogoutPassword.Text = logoutPassword;
+                    }
+                    if (hotfixParams.TryGetValue("Callback", out string callback))
+                    {
+                        txtCallback.Text = callback;
+                    }
+                    if (hotfixParams.TryGetValue("WlanUserMac", out string wlanUserMac))
+                    {
+                        txtWlanUserMac.Text = wlanUserMac;
+                    }
+                    if (hotfixParams.TryGetValue("WlanAcIp", out string wlanAcIp))
+                    {
+                        txtWlanAcIp.Text = wlanAcIp;
+                    }
+                    if (hotfixParams.TryGetValue("WlanVlanId", out string wlanVlanId))
+                    {
+                        txtWlanVlanId.Text = wlanVlanId;
+                    }
+                    if (hotfixParams.TryGetValue("JsVersion", out string jsVersion))
+                    {
+                        txtJsVersion.Text = jsVersion;
+                    }
+                    if (hotfixParams.TryGetValue("V", out string v))
+                    {
+                        txtV.Text = v;
+                    }
+                    if (hotfixParams.TryGetValue("TerminalType", out string terminalType))
+                    {
+                        txtTerminalType.Text = terminalType;
+                    }
+                    if (hotfixParams.TryGetValue("AcLogout", out string acLogout))
+                    {
+                        txtAcLogout.Text = acLogout;
+                    }
+                    
+                    // 更新本地保存的配置
+                    SaveLastUsedSettings();
+                    UpdateStatus("hotfix参数已应用到默认参数中");
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateStatus($"读取hotfix参数时出错: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 前往下载最新APP按钮点击事件
+        /// </summary>
+        private void btnDownloadApp_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateStatus("正在打开下载页面...");
+                // 使用默认浏览器打开Gitee发布页面
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "https://gitee.com/Lynlane/TUST-gateway-authentication/releases/",
+                    UseShellExecute = true
+                });
+                UpdateStatus("已打开下载页面");
+            }
+            catch (Exception ex)
+            {
+                UpdateStatus($"打开下载页面时出错: {ex.Message}");
+                txtUpdateStatus.Text = $"打开下载页面时出错: {ex.Message}";
+            }
         }
         #endregion
 
