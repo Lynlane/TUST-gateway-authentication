@@ -186,11 +186,17 @@ namespace GitRepoDownloader
         {
             try
             {
-                // 临时取消 Git 全局代理（克隆前）
-                string oldHttpProxy = ExecuteGitCommandAndGetOutput("config --global --get http.proxy");
-                string oldHttpsProxy = ExecuteGitCommandAndGetOutput("config --global --get https.proxy");
-                ExecuteGitCommand("config --global --unset http.proxy");
-                ExecuteGitCommand("config --global --unset https.proxy");
+                // 保存当前环境变量
+                string oldHttpProxyEnv = Environment.GetEnvironmentVariable("http_proxy");
+                string oldHttpsProxyEnv = Environment.GetEnvironmentVariable("https_proxy");
+                string oldGitHttpProxyEnv = Environment.GetEnvironmentVariable("GIT_HTTP_PROXY");
+                string oldGitHttpsProxyEnv = Environment.GetEnvironmentVariable("GIT_HTTPS_PROXY");
+
+                // 临时取消环境变量中的代理设置
+                Environment.SetEnvironmentVariable("http_proxy", null);
+                Environment.SetEnvironmentVariable("https_proxy", null);
+                Environment.SetEnvironmentVariable("GIT_HTTP_PROXY", null);
+                Environment.SetEnvironmentVariable("GIT_HTTPS_PROXY", null);
 
                 // 稀疏检出拉取 version.txt
                 var cloneOptions = new CloneOptions
@@ -215,11 +221,11 @@ namespace GitRepoDownloader
                     Commands.Checkout(repo, repo.Branches[$"origin/{BRANCH}"], new CheckoutOptions());
                 }
 
-                // 恢复 Git 全局代理（克隆后）
-                if (!string.IsNullOrEmpty(oldHttpProxy))
-                    ExecuteGitCommand($"config --global http.proxy {oldHttpProxy}");
-                if (!string.IsNullOrEmpty(oldHttpsProxy))
-                    ExecuteGitCommand($"config --global https.proxy {oldHttpsProxy}");
+                // 恢复环境变量中的代理设置
+                Environment.SetEnvironmentVariable("http_proxy", oldHttpProxyEnv);
+                Environment.SetEnvironmentVariable("https_proxy", oldHttpsProxyEnv);
+                Environment.SetEnvironmentVariable("GIT_HTTP_PROXY", oldGitHttpProxyEnv);
+                Environment.SetEnvironmentVariable("GIT_HTTPS_PROXY", oldGitHttpsProxyEnv);
 
                 // 读取 version.txt
                 string versionFile = Path.Combine(CACHE_DIR, VERSION_FILE);
@@ -248,11 +254,17 @@ namespace GitRepoDownloader
                 {
                     DeleteDirectoryWithReadOnlyFiles(CACHE_DIR);
 
-                    // 临时取消 Git 全局代理（克隆前）
-                    string oldHttpProxy = ExecuteGitCommandAndGetOutput("config --global --get http.proxy");
-                    string oldHttpsProxy = ExecuteGitCommandAndGetOutput("config --global --get https.proxy");
-                    ExecuteGitCommand("config --global --unset http.proxy");
-                    ExecuteGitCommand("config --global --unset https.proxy");
+                    // 保存当前环境变量
+                    string oldHttpProxyEnv = Environment.GetEnvironmentVariable("http_proxy");
+                    string oldHttpsProxyEnv = Environment.GetEnvironmentVariable("https_proxy");
+                    string oldGitHttpProxyEnv = Environment.GetEnvironmentVariable("GIT_HTTP_PROXY");
+                    string oldGitHttpsProxyEnv = Environment.GetEnvironmentVariable("GIT_HTTPS_PROXY");
+
+                    // 临时取消环境变量中的代理设置
+                    Environment.SetEnvironmentVariable("http_proxy", null);
+                    Environment.SetEnvironmentVariable("https_proxy", null);
+                    Environment.SetEnvironmentVariable("GIT_HTTP_PROXY", null);
+                    Environment.SetEnvironmentVariable("GIT_HTTPS_PROXY", null);
 
                     var cloneOptions = new CloneOptions
                     {
@@ -263,11 +275,11 @@ namespace GitRepoDownloader
                     // 克隆仓库
                     Repository.Clone(GIT_REPO_URL, CACHE_DIR, cloneOptions);
 
-                    // 恢复 Git 全局代理（克隆后）
-                    if (!string.IsNullOrEmpty(oldHttpProxy))
-                        ExecuteGitCommand($"config --global http.proxy {oldHttpProxy}");
-                    if (!string.IsNullOrEmpty(oldHttpsProxy))
-                        ExecuteGitCommand($"config --global https.proxy {oldHttpsProxy}");
+                    // 恢复环境变量中的代理设置
+                    Environment.SetEnvironmentVariable("http_proxy", oldHttpProxyEnv);
+                    Environment.SetEnvironmentVariable("https_proxy", oldHttpsProxyEnv);
+                    Environment.SetEnvironmentVariable("GIT_HTTP_PROXY", oldGitHttpProxyEnv);
+                    Environment.SetEnvironmentVariable("GIT_HTTPS_PROXY", oldGitHttpsProxyEnv);
 
                     string currentDir = Directory.GetCurrentDirectory();
                     string targetDir = Path.Combine(currentDir, DATA_DIR);
