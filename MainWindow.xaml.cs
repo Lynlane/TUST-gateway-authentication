@@ -67,7 +67,7 @@ namespace TUST_gateway_authentication
             chkDistinguishGroups.Checked += (s, e) => ApplyUISettings();
             chkDistinguishGroups.Unchecked += (s, e) => ApplyUISettings();
 
-            // 新增：初始化托盘菜单文本和图标
+            // 初始化托盘菜单文本和图标
             UpdateTrayAuthMenuText();
             UpdateTrayIcon();
         }
@@ -483,7 +483,7 @@ namespace TUST_gateway_authentication
                         ToggleAuthTimer(true);
                         await SendAuthRequest();
 
-                        // 新增：自动认证启动后同步托盘状态
+                        // 自动认证启动后同步托盘状态
                         UpdateTrayAuthMenuText();
                         UpdateTrayIcon();
 
@@ -1255,7 +1255,6 @@ namespace TUST_gateway_authentication
         #endregion
 
         #region Helper Methods
-        // 原有代码...
 
         /// <summary>
         /// 更新托盘菜单的认证开关文本（开始/停止维持认证）
