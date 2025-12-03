@@ -1,0 +1,12 @@
+AuthGateway=10.10.102.50:801
+LoginMethod=1
+LogoutAccount=drcom
+LogoutPassword=123
+Callback=123
+WlanUserMac=
+WlanAcIp=
+WlanVlanId=
+JsVersion=
+V=
+TerminalType=
+AcLogout=
