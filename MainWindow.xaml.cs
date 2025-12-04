@@ -2,7 +2,6 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics; // 用于获取当前进程的exe路径
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +9,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -806,6 +806,240 @@ namespace TUST_gateway_authentication
         #endregion
 
         #region Event Handlers
+        // AI 助手相关事件处理
+        private async void BtnSend_Click(object sender, RoutedEventArgs e)
+        {
+            await SendQuestionToAI();
+        }
+
+        private async void TxtQuestion_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                await SendQuestionToAI();
+            }
+        }
+
+        private async Task SendQuestionToAI()
+        {
+            string question = TxtQuestion.Text.Trim();
+            if (string.IsNullOrEmpty(question))
+            {
+                return;
+            }
+
+            // 添加用户问题到聊天记录
+            AddMessageToChat(question, true);
+            TxtQuestion.Text = string.Empty;
+
+            try
+            {
+                // API endpoint
+                string url = "https://ark.cn-beijing.volces.com/api/v3/responses";
+                
+                // Bearer token
+                string token = "3081e60c-5412-4feb-91b4-fd1dca96f4c1";
+                
+                // 构建用户问题，根据是否勾选结合日志选项决定是否添加日志内容
+                string userQuestion = question;
+                if (ChkCombineLogs.IsChecked == true && !string.IsNullOrEmpty(txtStatus.Text))
+                {
+                    userQuestion += $"\n\n状态日志：\n{txtStatus.Text}";
+                }
+
+                // 系统提示词
+                string systemPrompt = "## 知识库\n### 1. 项目基础 - 名称：TUST网关自动认证工具 - 定位：Windows应用，解决TUST网关手动认证、掉线、参数反复填写问题 - 技术：C#、WPF、.NET 8.0 - 问题反馈：Q群894974010  ### 2. 功能 #### 基本功能 - 定时发送认证请求（非心跳包），维持指定IP认证 - 注销IP认证，同时管理2组IP - 保存配置（含账号密码），兼容校园网/联通/电信/移动 - 一键获取本机WAN IP #### 高级功能 - 开机自动启动+自动认证 - 自定义主界面及功能，修改报文所有参数  ### 3. 使用说明 - 如何管理已认证的IP：在官方认证网页中的“用户自助服务系统”中操作 - 认证条件：仅需IPv4，IPv6为预留；隐藏参数（如MAC）无需改 - 跨设备：可认证手机/路由器WAN IP，无需设备端运行 - 数据存储：配置（含账号密码）保存在本地 - 如何无感登录：在其他选项→启动选项中，将三个选项全选 ### 4. 未来规划- 加密本地数据，优化UI 美观、高自定义  ### 5. UI修改 - 对UI不满意可以在项目源码的`MainWindow.xaml`中改，不熟悉WPF可将该文件内容发给AI改 - 素材：当前背景图来自@potg（ぴおてぐ） ### 作答准则：用一句话，不换行，不超100字地回复。";
+
+                // 创建请求对象，使用JsonSerializer自动转义特殊字符
+                var requestObj = new
+                {
+                    model = "ep-20251204212531-xhkls",
+                    input = new[]
+                    {
+                        new
+                        {
+                            role = "system",
+                            content = new[]
+                            {
+                                new
+                                {
+                                    type = "input_text",
+                                    text = systemPrompt
+                                }
+                            }
+                        },
+                        new
+                        {
+                            role = "user",
+                            content = new[]
+                            {
+                                new
+                                {
+                                    type = "input_text",
+                                    text = userQuestion
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // 序列化请求对象为JSON字符串
+                string jsonPayload = JsonSerializer.Serialize(requestObj);
+
+                using (HttpClient client = new HttpClient())
+                {
+                    // Set headers
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                    
+                    // Create request content
+                    var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+                    
+                    // Send POST request
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+                    
+                    // Read response
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    
+                    // 保存原始响应到文件，便于调试
+                    File.WriteAllText("ai_response.json", responseBody);
+                    
+                    // 提取type为output的text内容
+                    string aiResponse = ExtractOutputText(responseBody);
+                    
+                    // 添加AI回复到聊天记录
+                    AddMessageToChat(aiResponse, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddMessageToChat($"抱歉，我暂时无法回答你的问题。错误信息：{ex.Message}", false);
+            }
+        }
+
+        private void AddMessageToChat(string message, bool isUser)
+        {
+            TextBlock messageBlock = new TextBlock
+            {
+                Text = message,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 10),
+                Foreground = isUser ? Brushes.Black : Brushes.Gray
+            };
+
+            if (isUser)
+            {
+                messageBlock.HorizontalAlignment = HorizontalAlignment.Right;
+            }
+            else
+            {
+                messageBlock.HorizontalAlignment = HorizontalAlignment.Left;
+            }
+
+            ChatHistoryPanel.Children.Add(messageBlock);
+            
+            // 滚动到底部
+            ChatScrollViewer.ScrollToBottom();
+        }
+
+        private string ExtractOutputText(string responseBody)
+        {
+            try
+            {
+                // 解析JSON响应
+                using (var doc = JsonDocument.Parse(responseBody))
+                {
+                    var root = doc.RootElement;
+                    
+                    // 查找output数组
+                    if (root.TryGetProperty("output", out var outputProp) && outputProp.ValueKind == JsonValueKind.Array)
+                    {
+                        // 遍历output数组中的所有对象
+                        foreach (var outputItem in outputProp.EnumerateArray())
+                        {
+                            if (outputItem.ValueKind == JsonValueKind.Object)
+                            {
+                                // 检查是否包含content属性
+                                if (outputItem.TryGetProperty("content", out var contentProp) && contentProp.ValueKind == JsonValueKind.Array)
+                                {
+                                    // 遍历content数组
+                                    foreach (var contentItem in contentProp.EnumerateArray())
+                                    {
+                                        if (contentItem.ValueKind == JsonValueKind.Object)
+                                        {
+                                            // 查找type为output_text的对象
+                                            if (contentItem.TryGetProperty("type", out var typeProp) &&
+                                                contentItem.TryGetProperty("text", out var textProp) &&
+                                                (typeProp.GetString() == "output" || typeProp.GetString() == "output_text"))
+                                            {
+                                                // 找到匹配项，返回text内容
+                                                return textProp.GetString();
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // 如果当前outputItem没有content属性，检查它是否包含message对象
+                                if (outputItem.TryGetProperty("role", out var roleProp) && roleProp.GetString() == "assistant")
+                                {
+                                    // 继续查找content属性
+                                    if (outputItem.TryGetProperty("content", out var assistantContentProp) && assistantContentProp.ValueKind == JsonValueKind.Array)
+                                    {
+                                        // 遍历content数组
+                                        foreach (var assistantContentItem in assistantContentProp.EnumerateArray())
+                                        {
+                                            if (assistantContentItem.ValueKind == JsonValueKind.Object)
+                                            {
+                                                // 查找type为output_text的对象
+                                                if (assistantContentItem.TryGetProperty("type", out var assistantTypeProp) &&
+                                                    assistantContentItem.TryGetProperty("text", out var assistantTextProp) &&
+                                                    (assistantTypeProp.GetString() == "output" || assistantTypeProp.GetString() == "output_text"))
+                                                {
+                                                    // 找到匹配项，返回text内容
+                                                    return assistantTextProp.GetString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 检查message对象
+                    if (root.TryGetProperty("role", out var rootRoleProp) && rootRoleProp.GetString() == "assistant")
+                    {
+                        // 查找content属性
+                        if (root.TryGetProperty("content", out var rootContentProp) && rootContentProp.ValueKind == JsonValueKind.Array)
+                        {
+                            // 遍历content数组
+                            foreach (var rootContentItem in rootContentProp.EnumerateArray())
+                            {
+                                if (rootContentItem.ValueKind == JsonValueKind.Object)
+                                {
+                                    // 查找type为output_text的对象
+                                    if (rootContentItem.TryGetProperty("type", out var rootTypeProp) &&
+                                        rootContentItem.TryGetProperty("text", out var rootTextProp) &&
+                                        (rootTypeProp.GetString() == "output" || rootTypeProp.GetString() == "output_text"))
+                                    {
+                                        // 找到匹配项，返回text内容
+                                        return rootTextProp.GetString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // JSON解析失败，返回原始内容
+                return responseBody;
+            }
+            
+            // 找不到匹配项，返回原始内容
+            return responseBody;
+        }
+
         // 原有代码...
 
         /// <summary>

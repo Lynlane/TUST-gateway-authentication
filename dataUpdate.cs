@@ -7,7 +7,7 @@ namespace GitRepoDownloader
 {
     public class DataUpdater
     {
-        private const string GIT_REPO_URL = "https://gitee.com/Lynlane/TUST-gateway-authentication.git";
+        private const string GIT_REPO_URL = "https://cnb.cool/Lynrine/TUST-gateway-authentication.git";
         private const string CACHE_DIR = "cache";
         private const string DATA_DIR = "res\\data";
         private const string VERSION_FILE = "version.txt";

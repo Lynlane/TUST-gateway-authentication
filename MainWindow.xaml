@@ -873,7 +873,7 @@ VerticalAlignment="Stretch"/>
                                         <!-- 新增：应用更新按钮 -->
                                         <Button x:Name="btnApplyUpdate" Content="数据包更新" Margin="5"
                                         Click="ApplyUpdate_Click"
-                                        ToolTip="应用仓库中hotfix分支的数据更新"
+                                        ToolTip="应用hotfix分支的数据更新"
                                         Visibility="Collapsed"/>
                                         
                                         <!-- 新增：前往下载最新APP按钮 -->
@@ -892,19 +892,63 @@ VerticalAlignment="Stretch"/>
                                 <Expander Grid.Row="6" Header="状态日志" Margin="0,10,0,5" Padding="0" IsExpanded="True" Style="{StaticResource StatusExpanderStyle}">
                                     <Border BorderThickness="0" CornerRadius="3" Background="White" Height="150">
                                         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="5">
-                                            <TextBlock x:Name="txtStatus" TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource TextBrush}" />
+                                            <TextBlock x:Name="txtStatus" TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource TextBrush}"/>
                                         </ScrollViewer>
                                     </Border>
                                 </Expander>
 
                                 <!-- 版本信息 -->
-                                <StackPanel Grid.Row="7" Orientation="Horizontal" 
+                                <StackPanel Grid.Row="6" Orientation="Horizontal" 
                                     HorizontalAlignment="Right" Margin="0,15,10,0">
                                     <TextBlock Text="版本: V0.2.0" 
                                        Foreground="{StaticResource SubtleTextBrush}"/>
                                 </StackPanel>
                             </Grid>
                         </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="AI 助手">
+                        <Grid Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- 聊天记录显示区 -->
+                            <Border Grid.Row="0" Background="#F9FAFB" CornerRadius="5" BorderBrush="#E5E7EB" BorderThickness="1" Margin="0,0,0,10">
+                                <ScrollViewer x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" Padding="10">
+                                    <StackPanel x:Name="ChatHistoryPanel">
+                                        <TextBlock Text="你好！我是 TUST 网关智能助手。&#x0a;你可以问我：&#x0a;- 如何管理已注册的ip？&#x0a;- 如何配置为无感登录？" 
+                                               Foreground="#718096" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+
+                            <!-- 输入区 -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBox x:Name="TxtQuestion" Grid.Row="0" Grid.Column="0" Height="36" 
+                                         VerticalContentAlignment="Center" Margin="0,0,5,5"
+                                         Text="" KeyDown="TxtQuestion_KeyDown"
+                                         ToolTip="请输入你的问题..."/>
+                                 
+                                <Button x:Name="BtnSend" Grid.Row="0" Grid.Column="1" Content="发送" Width="60" Height="36" 
+                                        Click="BtnSend_Click" Background="{StaticResource PrimaryBrush}" Foreground="{StaticResource AccentBrush}"/>
+                                
+                                <!-- 结合日志选项 -->
+                                <CheckBox x:Name="ChkCombineLogs" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                          Content="结合日志" VerticalAlignment="Center" Margin="5,0,0,0"
+                                          ToolTip="勾选后将状态日志内容加入上下文"/>
+                            </Grid>
+                        </Grid>
                     </TabItem>
                 </TabControl>
             </Grid>
